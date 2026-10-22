@@ -1,0 +1,106 @@
+# Towny Milestones
+#
+# Every source below adds extra claims (town blocks) on top of what Towny already gives a town.
+# All sources count per TOWN, never per resident, so a bigger town does not earn faster.
+# Each source has its own "max", and "total-cap" limits all sources combined.
+#
+# Only these settings need a server restart: save-interval-minutes and
+# diplomacy.scan-interval-minutes. Everything else is applied by /townymilestones reload.
+
+# When a "day" starts and ends (used for active days). "system" uses the server's time zone;
+# otherwise use an IANA name such as Europe/Amsterdam.
+timezone: system
+
+# Hard limit on the combined bonus of all sources.
+# 0 means towns keep earning progress but receive no extra claims yet: /townymilestones info
+# shows what each town has earned. Raise it (for example to 64) and run /townymilestones reload
+# when you are ready to grant claims; every town is updated at once.
+total-cap: 0 #increase this so people start being able to use their earned bonus.
+
+# Optional extra limit: the bonus may not exceed this percentage of the claims the town
+# would otherwise have (before this plugin). 0 turns the limit off.
+# Example: 50 means a town that Towny gives 24 claims can earn at most +12.
+max-percent-of-base: 0
+
+# Tell a town's online residents in chat when its bonus grows.
+announce: true
+
+# How often the data file is written, in minutes.
+save-interval-minutes: 5
+
+# Source 1: town age. Counted from the day the town was created in Towny.
+age:
+  enabled: true
+  # +blocks-per-period claims for every full period-days since the town was created.
+  period-days: 3
+  blocks-per-period: 1
+  max: 16
+  # The town needs at least this many active days (see below) before age counts at all.
+  min-active-days: 3
+  # Age stops growing when the town has had no active day for this many days.
+  # It starts growing again the next time the town is active.
+  inactivity-grace-days: 14
+
+# Source 2: active days. A day counts for a town when at least ONE of its residents
+# played enough minutes that day. One day counts once per town, however many residents play.
+active-days:
+  enabled: true
+  # Minutes one resident must be online that day.
+  min-minutes: 15
+  # Only count a minute when the player moved or turned their view since the previous minute,
+  # which stops idle players from counting.
+  require-movement: true
+  # +1 claim for every this many active days.
+  days-per-block: 2
+  max: 24
+
+# Source 3: advancements. Each advancement counts once per town, the first time one of its
+# residents earns it. Advancements earned by players who are not in a town do not count.
+advancements:
+  enabled: true
+  # The resident must have been in the town at least this many days when they earned it.
+  min-days-in-town: 3
+  # Credit the advancements a player had already completed before this plugin existed.
+  # It happens once per player, ever, about two seconds after they join, once they are in a town
+  # and have been there min-days-in-town days. A player who later moves to another town does not
+  # bring those advancements along. Towns that were long established gain a lot at once.
+  retroactive: true
+  # Points per advancement, by its frame in the advancements screen.
+  points:
+    task: 1
+    goal: 2
+    challenge: 4
+  # +1 claim for every this many points.
+  # Tuned for BlazeandCave's Advancements Pack 1.21 (about 1,170 counted advancements worth
+  # roughly 2,200 points with the points above): 20 means the max needs about 720 points.
+  # For vanilla advancements only (about 120 advancements), a value around 6 fits.
+  points-per-block: 20
+  max: 36
+  # Optional filters on the full advancement key (namespace:path).
+  # include-prefixes: if not empty, only keys starting with one of these count.
+  # exclude-prefixes: keys starting with one of these never count.
+  # Run /townymilestones advancements to see which prefixes exist on your server.
+  # The default excludes three groups of BlazeandCave's pack: the milestone and legend
+  # advancements (they are earned from other advancements, so they would count twice), the
+  # hidden "cheater" advancements, and the statistics advancements (long-term grinds).
+  include-prefixes: []
+  exclude-prefixes:
+    - "blazeandcave:bacap/"
+    - "blazeandcave:technical/"
+    - "blazeandcave:statistics/"
+
+# Source 4: diplomacy. Counts the allies of the town's nation. Unlike the other sources this
+# one is live: it drops again when an alliance ends. A town without a nation gets nothing.
+# Towny already gives nations a claim bonus through nation_level in its own config; this
+# is separate and does not replace it.
+diplomacy:
+  enabled: true
+  # An alliance counts only when both nations list each other as allies and it has
+  # lasted at least this many days.
+  min-alliance-days: 14
+  # The allied nation must have at least this many residents.
+  min-ally-residents: 3
+  blocks-per-ally: 2
+  max: 8
+  # How often alliances are checked, in minutes.
+  scan-interval-minutes: 10

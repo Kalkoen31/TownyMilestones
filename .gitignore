@@ -1,0 +1,17 @@
+# Build output
+build/
+target/
+.gradle/
+.kotlin/
+out/
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+
+# Local test server directory (for example from the Run-Task Gradle plugin)
+run/

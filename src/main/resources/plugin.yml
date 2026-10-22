@@ -1,0 +1,18 @@
+name: TownyMilestones
+version: 1.0.0
+main: io.github.kalkoen31.townymilestones.TownyMilestones
+description: "Earn extra Towny town claims through town age, active days, advancements and alliances."
+author: kalkoen31
+# api-version is the Paper version this plugin targets, in the format the Paper docs show.
+api-version: '26.2'
+# Towny must be loaded first: this plugin listens to Towny events and reads Towny objects.
+depend: [Towny]
+# PlaceholderAPI is optional: its placeholders are registered only when it is installed.
+softdepend: [PlaceholderAPI]
+permissions:
+  townymilestones.info:
+    description: "View the claim bonus breakdown of your own town."
+    default: true
+  townymilestones.admin:
+    description: "View any town's breakdown, list advancement prefixes and reload the config."
+    default: op
